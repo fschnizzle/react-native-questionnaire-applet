@@ -72,3 +72,26 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+
+
+# Ignore node_modules and any logs
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore build files
+android/app/build/
+ios/Pods/
+ios/build/
+
+# Ignore IDE/Editor-specific files
+.vscode/
+.idea/
+.DS_Store
+.gradle/
+
+# Ignore React Native specific files
+.expo/
+.expo-shared/
