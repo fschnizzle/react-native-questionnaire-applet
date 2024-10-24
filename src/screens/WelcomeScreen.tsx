@@ -8,6 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 type RootStackParamList = {
   WelcomeScreen: undefined;
   SubCategory1: undefined;
+  QuestionScreen: undefined;
 };
 
 type WelcomeScreenProps = {
@@ -17,14 +18,14 @@ type WelcomeScreenProps = {
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
   const handleGetStarted = () => {
     // Navigate to the first sub-category screen
-    navigation.navigate('SubCategory1');
+    navigation.navigate('QuestionScreen'); // navigation.navigate('SubCategory1');
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to Our App!</Text>
       <Text style={styles.description}>
-        Thanks for joining our app. In order to best customize your experience, we would like to begin with a short questionnaire that will gather your preferences and current lifestyle habits.
+        Our goal is to help you reduce your carbon footprint and live more sustainably by focusing on five key areas: Transport, Energy Usage, Food Consumption, Goods and Services, and Waste & Water. The following questions will help us personalise challenges that fit your lifestyle, making it easier to adopt eco-friendly habits and make a positive impact on the planet.
       </Text>
       <Button title="Get Started" onPress={handleGetStarted} />
     </View>

@@ -17,7 +17,6 @@ type SubCategory1Props = {
 
 const SubCategory1: React.FC<SubCategory1Props> = ({ navigation }) => {
   const { formData, setFormData } = useForm();
-  
   const [textEntry, setTextEntry] = useState<string>(formData.subCategory1.textEntry);
   const [numberEntry, setNumberEntry] = useState<number>(formData.subCategory1.numberEntry);
   const [radioSelection, setRadioSelection] = useState<string>(formData.subCategory1.radioSelection);

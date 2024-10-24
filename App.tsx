@@ -8,6 +8,7 @@ import WelcomeScreen from './src/screens/WelcomeScreen';
 import SubCategory1 from './src/screens/SubCategory1';
 import SubCategory2 from './src/screens/SubCategory2';
 import ReviewScreen from './src/screens/ReviewScreen';
+import QuestionScreen from './src/screens/QuestionScreen';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,7 @@ export default function App() {
           <Stack.Screen name="SubCategory1" component={SubCategory1} />
           <Stack.Screen name="SubCategory2" component={SubCategory2} />
           <Stack.Screen name="ReviewScreen" component={ReviewScreen} />
+          <Stack.Screen name="QuestionScreen" component={QuestionScreen} />
           
         </Stack.Navigator>
       </NavigationContainer>
