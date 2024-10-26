@@ -1,5 +1,8 @@
+// import firestore from '@react-native-firebase/firestore'; // Import Firebase Firestore
+
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, Button, StyleSheet, TouchableOpacity} from 'react-native';
+import Slider from '@react-native-community/slider'; // Import Slider
 
 // Custom YesNoButton component
 const YesNoButton = ({ title, value, onPress }) => (
@@ -13,7 +16,7 @@ const YesNoButton = ({ title, value, onPress }) => (
         <Text style={styles.buttonText}>Yes</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.yesNoButton, !value ? styles.selectedButton : styles.unselectedButton]}
+        style={[styles.yesNoButton, value === false ? styles.selectedButton : styles.unselectedButton]}
         onPress={() => onPress(false)}
       >
         <Text style={styles.buttonText}>No</Text>
@@ -22,12 +25,31 @@ const YesNoButton = ({ title, value, onPress }) => (
   </View>
 );
 
+// Custom DistanceSlider component
+const DistanceSlider = ({ value, onValueChange }) => (
+    <View style={styles.sliderContainer}>
+      <Text style={styles.question}>
+        Select your commute distance (in km): {value === 15 ? '15+' : value} km
+      </Text>
+      <Slider
+        style={styles.slider}
+        minimumValue={0}
+        maximumValue={15}
+        step={1}
+        value={value}
+        onValueChange={onValueChange}
+        minimumTrackTintColor="#4caf50"
+        maximumTrackTintColor="#ccc"
+      />
+    </View>
+  );
+
 // Main QuestionScreen Component
 const QuestionScreen: React.FC = () => {
   // State variables for each question
   const [ownsCar, setOwnsCar] = useState<boolean | null>(null);
   const [commutes, setCommutes] = useState<boolean | null>(null);
-  const [commuteDistance, setCommuteDistance] = useState<boolean | null>(null);
+  const [commuteDistance, setCommuteDistance] = useState<number>(0); // Changed to number
   const [publicTransport, setPublicTransport] = useState<boolean | null>(null);
   const [ownsBicycle, setOwnsBicycle] = useState<boolean | null>(null);
   const [canWalk, setCanWalk] = useState<boolean | null>(null);
@@ -37,43 +59,51 @@ const QuestionScreen: React.FC = () => {
   const [accessLibrary, setAccessLibrary] = useState<boolean | null>(null);
   const [ownsDishwasher, setOwnsDishwasher] = useState<boolean | null>(null);
   const [ownsDryer, setOwnsDryer] = useState<boolean | null>(null);
-  const [nearPark, setNearPark] = useState<boolean | null>(null);
-  const [accessMarket, setAccessMarket] = useState<boolean | null>(null);
-  const [nearSustainableCafe, setNearSustainableCafe] = useState<boolean | null>(null);
 
-  const handleSubmit = () => {
-    // Handle submission logic (e.g., save answers or navigate to the next screen)
+  const handleSubmit = async () => {
+    // Prepare answers object for Firebase
     const answers = {
-      ownsCar,
-      commutes,
-      commuteDistance,
-      publicTransport,
-      ownsBicycle,
-      canWalk,
-      hasHeaterAC,
-      ownsWashingMachine,
-      isVegetarian,
-      accessLibrary,
-      ownsDishwasher,
-      ownsDryer,
-      nearPark,
-      accessMarket,
-      nearSustainableCafe,
+      preferences: {
+        ownsCar,
+        commutes,
+        commuteDistance, // Will now be a number
+        publicTransport,
+        ownsBicycle,
+        canWalk,
+        hasHeaterAC,
+        ownsWashingMachine,
+        isVegetarian,
+        accessLibrary,
+        ownsDishwasher,
+        ownsDryer,
+      }
     };
+
+    // Log the formatted answers
     console.log('Submitted Answers:', answers);
-    // Navigate to next screen
+
+    try {
+      // Save to Firebase (adjust 'users' and 'userID' accordingly)
+      // await firestore().collection('users').doc('userID').set(answers, { merge: true });
+      console.log('Answers saved successfully!');
+    } catch (error) {
+      console.error('Error saving answers:', error);
+    }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <ScrollView 
+    contentContainerStyle={styles.scrollContainer}
+    scrollEventThrottle={10}  // Adjust event throttle
+    decelerationRate={0.8}   // Faster deceleration
+    >
       <Text style={styles.title}>Transport</Text>
       <YesNoButton title="1. Do you own a car?" value={ownsCar} onPress={setOwnsCar} />
       <YesNoButton title="2. Do you commute to work or school?" value={commutes} onPress={setCommutes} />
       {commutes && (
-        <YesNoButton
-          title="Is your commute less than 10 km?"
+        <DistanceSlider
           value={commuteDistance}
-          onPress={setCommuteDistance}
+          onValueChange={setCommuteDistance}
         />
       )}
       <YesNoButton
@@ -98,11 +128,6 @@ const QuestionScreen: React.FC = () => {
       <YesNoButton title="1. Do you own a dishwasher?" value={ownsDishwasher} onPress={setOwnsDishwasher} />
       <YesNoButton title="2. Do you own a clothes dryer?" value={ownsDryer} onPress={setOwnsDryer} />
 
-      <Text style={styles.title}>Context-Aware Tasks</Text>
-      <YesNoButton title="1. Do you live near a park?" value={nearPark} onPress={setNearPark} />
-      <YesNoButton title="2. Do you have access to a market that sells fresh, locally produced food?" value={accessMarket} onPress={setAccessMarket} />
-      <YesNoButton title="3. Are there sustainable cafes or restaurants near your location?" value={nearSustainableCafe} onPress={setNearSustainableCafe} />
-
       <Button title="Submit" onPress={handleSubmit} />
     </ScrollView>
   );
@@ -118,8 +143,9 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   question: {
-    fontSize: 16,
-    marginBottom: 5,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   buttonContainer: {
     marginVertical: 10,
@@ -145,7 +171,14 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    color: '#fff',
+    color: '#000',
+  },
+  sliderContainer: {
+    marginVertical: 10,
+  },
+  slider: {
+    width: '100%',
+    height: 40,
   },
   scrollContainer: {
     paddingBottom: 50,  // Add padding to the bottom
