@@ -22,7 +22,6 @@ export default function App() {
           <Stack.Screen name="SubCategory2" component={SubCategory2} />
           <Stack.Screen name="ReviewScreen" component={ReviewScreen} />
           <Stack.Screen name="QuestionScreen" component={QuestionScreen} />
-          
         </Stack.Navigator>
       </NavigationContainer>
     </FormProvider>
